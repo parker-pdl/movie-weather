@@ -29,9 +29,16 @@ class Temperature extends PureComponent {
           <span ref={this.status} className="temperature__status">{this.props.weather}</span>
           <div className="temperature">
             <span ref={this.value} className="temperature__value">{this.props.temperature}</span>
-            <div ref={this.unit} className="temperature__unit">
+            <div
+              ref={this.unit}
+              className="temperature__unit"
+              role="button"
+              tabIndex="0"
+              aria-label="Toggle Celsius/Fahrenheit"
+              onClick={this.props.onUnitToggle}
+              onKeyPress={(e) => { if (e.key === 'Enter') { this.props.onUnitToggle && this.props.onUnitToggle(); } }}>
               <span className="temperature__unit-dot"></span>
-              <span className="temperature__unit-letter">c</span>
+              <span className="temperature__unit-letter">{this.props.unit || 'c'}</span>
             </div>
           </div>
         </div>
@@ -42,7 +49,9 @@ class Temperature extends PureComponent {
 
 Temperature.propTypes = {
   weather: PropTypes.string.isRequired,
-  temperature: PropTypes.number.isRequired
+  temperature: PropTypes.number.isRequired,
+  unit: PropTypes.string,
+  onUnitToggle: PropTypes.func
 };
 
 export default Temperature;
