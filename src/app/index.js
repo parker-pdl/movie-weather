@@ -16,6 +16,8 @@ class App extends Component {
     this.onInfoClose = this.onInfoClose.bind(this);
     this.onRefreshClick = this.onRefreshClick.bind(this);
     this.onGPSLocationClick = this.onGPSLocationClick.bind(this);
+    this.onUnitToggle = this.onUnitToggle.bind(this);
+    this.onSearchLocation = this.onSearchLocation.bind(this);
 
     this.storage = new Storage();
     this.state = { ...this.storage.data };
@@ -29,19 +31,19 @@ class App extends Component {
     rAFTimeout(() => {
       this.loader.current.animateOut();
 
-      rAFTimeout(() => this.updatedState(this.storage), 600);
+      rAFTimeout(() => this.updatedState(), 600);
     }, 1000);
   }
 
-  updatedState({ ipGeoLocation, data }) {
-    if (ipGeoLocation.data && ipGeoLocation.data.error) {
+  updatedState() {
+    if (this.storage.data.error) {
       this.setState({
-        error: ipGeoLocation.data.error,
+        error: this.storage.data.error,
         dataLoaded: true,
       });
     } else {
       this.setState({
-        ...data,
+        ...this.storage.data,
         showInfo: false,
         dataLoaded: true,
         updating: false,
@@ -49,31 +51,51 @@ class App extends Component {
     }
   }
 
-  async onGetCurrentLocation({ latitude, longitude }) {
-    await this.storage.getLocation(latitude, longitude);
-
-    rAFTimeout(() => this.updatedState(this.storage), 600);
-  }
-
   onGPSLocationClick() {
-    if (!this.state.updating) {
+    if (!this.state.updating && navigator.geolocation) {
       this.setState({ updating: true });
 
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-          this.onGetCurrentLocation(position.coords);
-        });
-      }
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          await this.storage.getCurrentPosition(position.coords.latitude, position.coords.longitude);
+          this.updatedState();
+        },
+        async () => {
+          // Permission denied or unavailable -- keep whatever is on screen.
+          this.setState({ updating: false });
+        }
+      );
     }
   }
-  onRefreshClick() {
-    const { latitude, longitude } = this.storage.data;
 
+  async onRefreshClick() {
     if (!this.state.updating) {
       this.setState({ updating: true });
 
-      this.onGetCurrentLocation({ latitude, longitude });
+      await this.storage.refresh();
+      this.updatedState();
     }
+  }
+
+  async onSearchLocation(query) {
+    if (!query || !query.trim()) {
+      return;
+    }
+
+    this.setState({ updating: true });
+
+    try {
+      await this.storage.search(query.trim());
+      this.updatedState();
+    } catch (error) {
+      this.setState({ updating: false, searchError: error.message });
+    }
+  }
+
+  onUnitToggle() {
+    const unit = this.storage.toggleUnit();
+
+    this.setState({ unit });
   }
 
   onInfoClick() {
@@ -102,12 +124,19 @@ class App extends Component {
         <Home currentCondition={this.state.currentCondition}
           foreCastDaily={this.state.foreCastDaily}
           foreCastHourly={this.state.foreCastHourly}
+          unit={this.state.unit}
           onInfoClick={this.onInfoClick}
           onGPSLocationClick={this.onGPSLocationClick}
+          onUnitToggle={this.onUnitToggle}
           updating={this.state.updating}
           lastUpdate={this.state.lastUpdate}
           onRefreshClick={this.onRefreshClick} />
-        <Info onInfoClose={this.onInfoClose} show={this.state.showInfo} />
+        <Info onInfoClose={this.onInfoClose}
+          show={this.state.showInfo}
+          currentCondition={this.state.currentCondition}
+          unit={this.state.unit}
+          onSearchLocation={this.onSearchLocation}
+          searchError={this.state.searchError} />
       </Fragment>
     )
   }
