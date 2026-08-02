@@ -10,6 +10,7 @@ import Info from '../../components/Info';
 import DateCurrent from '../../components/DateCurrent';
 import Refresh from '../../components/Refresh';
 import PropTypes from 'prop-types';
+import { displayTemperature } from '../../helpers/units';
 
 class Home extends PureComponent {
   constructor() {
@@ -35,18 +36,33 @@ class Home extends PureComponent {
   }
 
   render() {
+    const unit = this.props.unit;
+
+    const foreCastHourly = this.props.foreCastHourly.map((item) => ({
+      ...item,
+      temperature: displayTemperature(item.temperature, unit),
+    }));
+
+    const foreCastDaily = this.props.foreCastDaily.map((item) => ({
+      ...item,
+      temperature: {
+        max: displayTemperature(item.temperature.max, unit),
+        min: displayTemperature(item.temperature.min, unit),
+      },
+    }));
+
     return <Fragment>
       <GPSLocation onGPSLocationClick={this.props.onGPSLocationClick} />
       <Info onInfoClick={this.props.onInfoClick} onInfoClose={this.props.onInfoClose} />
       <Location location={this.props.currentCondition.location} />
       <DateCurrent date={this.props.currentCondition.date} />
-      <Temperature weather={this.props.currentCondition.weather} temperature={this.props.currentCondition.temperature} />
+      <Temperature weather={this.props.currentCondition.weather} temperature={displayTemperature(this.props.currentCondition.temperature, unit)} unit={unit} onUnitToggle={this.props.onUnitToggle} />
       <Refresh onClick={this.props.onRefreshClick} updating={this.props.updating} time={this.props.lastUpdate} />
       <section className="forecasts">
         <div className="forecasts__scroll-panel swiper-container">
           <div className="swiper-wrapper">
-            <ForecastHourly foreCastHourly={this.props.foreCastHourly} />
-            <ForecastDaily foreCastDaily={this.props.foreCastDaily} />
+            <ForecastHourly foreCastHourly={foreCastHourly} />
+            <ForecastDaily foreCastDaily={foreCastDaily} />
           </div>
         </div>
         <Navigation currentForecast={this.state.currentForecast} />
@@ -61,10 +77,12 @@ Home.propTypes = {
   updating: PropTypes.bool,
   lastUpdate: PropTypes.string,
   currentCondition: PropTypes.object,
+  unit: PropTypes.string,
   onGPSLocationClick: PropTypes.func,
   onInfoClick: PropTypes.func,
   onInfoClose: PropTypes.func,
-  onRefreshClick: PropTypes.func
+  onRefreshClick: PropTypes.func,
+  onUnitToggle: PropTypes.func
 };
 
 export default Home;
