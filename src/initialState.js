@@ -5,135 +5,58 @@ export default {
   longitude: 0,
   updating: false,
   lastUpdate: "00:00",
+  unit: "c",
   currentCondition: {
     location: "--",
     temperature: 0,
+    feelsLike: 0,
     date: "--",
     weather: "Clear",
-    dayTime: false,
+    icon: "svg/day/113.png",
     humidity: 0,
-    dataLoaded: false,
-    foreCastDaily: [
-      {
-        weekDay: "mon",
-        rainProbability: 0,
-        icon: "wi-day-sunny",
-        temperature: {
-          max: 0,
-          min: 0
-        }
-      },
-      {
-        weekDay: "tue",
-        rainProbability: 0,
-        icon: "wi-day-sunny",
-        temperature: {
-          max: 0,
-          min: 0
-        }
-      },
-      {
-        weekDay: "wed",
-        rainProbability: 0,
-        icon: "wi-day-sunny",
-        temperature: {
-          max: 0,
-          min: 0
-        }
-      },
-      {
-        weekDay: "Thu",
-        rainProbability: 0,
-        icon: "wi-day-sunny",
-        temperature: {
-          max: 0,
-          min: 0
-        }
-      },
-      {
-        weekDay: "Fri",
-        rainProbability: 0,
-        icon: "wi-fog",
-        temperature: {
-          max: 0,
-          min: 0
-        }
-      }
-    ],
-    foreCastHourly: [
-      {
-        time: 0,
-        rainProbability: 0,
-        temperature: 23,
-        icon: "wi-fog"
-      },
-      {
-        time: 0,
-        rainProbability: 0,
-        temperature: 25,
-        icon: "wi-day-sunny"
-      },
-      {
-        time: 0,
-        rainProbability: 0,
-        temperature: 15,
-        icon: "wi-day-sunny"
-      },
-      {
-        time: 0,
-        rainProbability: 0,
-        temperature: 16,
-        icon: "wi-day-sunny"
-      },
-      {
-        time: 0,
-        rainProbability: 0,
-        temperature: 24,
-        icon: "wi-day-sunny"
-      }
-    ],
-    location: "São Paulo",
-    date: "Sunday, August 12, 2018",
-    temperature: 17,
-    weather: "Mostly Cloudy"
+    windSpeed: 0,
+    cloudCover: 0,
+    uvIndex: 0,
+    sunrise: "--:--",
+    sunset: "--:--",
   },
   foreCastHourly: [
     {
       time: 0,
       rainProbability: 0,
       temperature: 0,
-      icon: "wi-day-cloudy"
+      icon: "svg/day/119.png"
     },
     {
       time: 0,
       rainProbability: 0,
       temperature: 0,
-      icon: "wi-day-cloudy"
+      icon: "svg/day/119.png"
     },
     {
       time: 0,
       rainProbability: 0,
       temperature: 0,
-      icon: "wi-day-cloudy"
+      icon: "svg/day/119.png"
     },
     {
       time: 0,
       rainProbability: 0,
       temperature: 0,
-      icon: "wi-night-clear"
+      icon: "svg/night/113.png"
     },
     {
       time: 0,
       rainProbability: 0,
-      temperature: 14,
-      icon: "wi-night-clear"
+      temperature: 0,
+      icon: "svg/night/113.png"
     }
   ],
   foreCastDaily: [
     {
       weekDay: "mon",
       rainProbability: 0,
-      icon: "wi-day-sunny",
+      icon: "svg/day/113.png",
       temperature: {
         max: 0,
         min: 0
@@ -142,7 +65,7 @@ export default {
     {
       weekDay: "tue",
       rainProbability: 0,
-      icon: "wi-day-sunny",
+      icon: "svg/day/113.png",
       temperature: {
         max: 0,
         min: 0
@@ -151,7 +74,7 @@ export default {
     {
       weekDay: "wed",
       rainProbability: 0,
-      icon: "wi-night-alt-cloudy",
+      icon: "svg/day/119.png",
       temperature: {
         max: 0,
         min: 0
@@ -160,7 +83,7 @@ export default {
     {
       weekDay: "thu",
       rainProbability: 0,
-      icon: "wi-cloudy",
+      icon: "svg/day/122.png",
       temperature: {
         max: 0,
         min: 0
@@ -169,7 +92,7 @@ export default {
     {
       weekDay: "fri",
       rainProbability: 0,
-      icon: "wi-cloudy",
+      icon: "svg/day/122.png",
       temperature: {
         max: 0,
         min: 0
