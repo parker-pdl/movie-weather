@@ -11,6 +11,11 @@ const LOCATION_KEY = 'mw_location';
 const LAST_UPDATE_KEY = 'mw_lastupdate';
 const UNIT_KEY = 'mw_unit';
 
+// If IP-based location fails (rate limit, outage, etc.), fall back to this
+// instead of leaving the user on a dead-end error screen. Los Angeles fits
+// the movie theming and gives the app something real to show.
+const DEFAULT_LOCATION = { latitude: 34.0522, longitude: -118.2437, name: 'Los Angeles, CA' };
+
 export default class Storage {
   constructor() {
     this.openMeteo = new OpenMeteo();
@@ -126,7 +131,13 @@ export default class Storage {
 
       await this.fetchWeatherFor(location.latitude, location.longitude, location.name);
     } catch (error) {
-      this.data = { ...this.data, error: error.message };
+      // IP location is down or rate-limited -- fall back to a default city
+      // rather than showing a dead-end error screen.
+      try {
+        await this.fetchWeatherFor(DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude, DEFAULT_LOCATION.name);
+      } catch (fallbackError) {
+        this.data = { ...this.data, error: fallbackError.message };
+      }
     }
   }
 
