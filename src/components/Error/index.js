@@ -6,7 +6,7 @@ class Error extends PureComponent {
     return (
       <div className="error">
         <h1>:(</h1>
-        This application uses a free service from <a target="blank" rel="noopener" href="https://ipstack.com/">https://ipstack.com/</a> and the current usage exceded the reach limit.<br /><br />Please come back later.
+        This app uses free weather and location services, and one of them is temporarily unavailable or over its usage limit.<br /><br />Please try refreshing in a moment.
       </div>
     )
   }
