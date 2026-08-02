@@ -1,40 +1,27 @@
-# ⛅️ PWA Weather App made with React
+# Movie Weather
 
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app)
+A movie-themed weather app -- the look and feel rotates every calendar month to match a different movie mood/genre. Ships to the web, Google Play Store, and Amazon Appstore (Fire TV/Tablet) from one codebase.
 
-<https://weather.iondrimbafilho.me/>
+Forked from iondrimba/react-weather-app (MIT licensed) -- credit to the original author. See docs/PLAN.md for the movie-theming and multi-platform rollout plan, and src/themes/monthlyThemes.js for the theme-of-the-month config.
 
-![build](https://github.com/iondrimba/react-weather-app/workflows/build/badge.svg?branch=main)
-![deploy](https://github.com/iondrimba/react-weather-app/workflows/deploy/badge.svg?branch=main)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/8cd55ce66e034c44f03a/test_coverage)](https://codeclimate.com/github/iondrimba/react-weather-app/test_coverage)
+---
 
+## Upstream project info (original README)
 
-## About
+PWA Weather App made with React. This project was bootstrapped with Create React App (https://github.com/facebookincubator/create-react-app). Live demo: https://weather.iondrimbafilho.me/
 
-This is a personal project built in my spare time for learning purposes.
+### About
+
+Originally a personal project built for learning purposes by iondrimba.
 
 ### APIs
 
-* <https://api.ipify.org/?format=json> - IP search
-* [IP Location Finder by KeyCDN](https://tools.keycdn.com/geo)
-* Powered by <a href="https://www.weatherapi.com/" title="Weather API">WeatherAPI.com</a>
+IP search via https://api.ipify.org/?format=json, IP Location Finder by KeyCDN (https://tools.keycdn.com/geo), and weather data powered by WeatherAPI.com (https://www.weatherapi.com/).
 
-#### Features
+### Features
 
-* PWA
-* Responsive
-* Offline ready
-* Installable (add to Homescreen )
+PWA, responsive, offline ready, installable (add to Homescreen), and swipe gestures.
 
-https://github.com/user-attachments/assets/f35407e2-8252-4902-abb0-293ff04a5e51
+### Built with
 
-
-* Swipe gestures
-
-#### Built with
-
-* ES6
-* Sass
-* React
-* Jest
-* VSCode
+ES6, Sass, React, Jest, and VSCode.
