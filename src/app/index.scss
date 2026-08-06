@@ -27,6 +27,20 @@ a {
   justify-content: space-between;
   position: relative;
   overflow: hidden;
+
+  &__watermark {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 320px 320px;
+    bottom: 0;
+    left: 0;
+    opacity: .08;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 0;
+  }
 }
 
 .wrapper-temperature {

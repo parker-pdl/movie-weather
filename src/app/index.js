@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import Home from './Home';
 import Info from './Info';
-import Loader from '../components/Loader';
+import MonthlySplash from '../components/MonthlySplash';
 import Error from '../components/Error';
 import rAFTimeout from '../helpers/rAFTimeout';
 import Storage from './storage';
@@ -144,8 +144,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <div className="App__watermark" aria-hidden="true" style={{ backgroundImage: 'url(/brand-watermark.png)' }} />
         {
-          !this.state.dataLoaded ? <Loader ref={this.loader} /> : this.display()
+          !this.state.dataLoaded ? <MonthlySplash ref={this.loader} /> : this.display()
         }
       </div>
     );
