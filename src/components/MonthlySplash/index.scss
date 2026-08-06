@@ -1,0 +1,63 @@
+.monthly-splash {
+  background-color: #05060a;
+  background-position: center;
+  background-size: cover;
+  bottom: 0;
+  left: 0;
+  opacity: 1;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: opacity .6s ease-out;
+  z-index: 20;
+
+  &--fade-out {
+    opacity: 0;
+  }
+
+  &__scrim {
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, .55) 0%,
+      rgba(0, 0, 0, .25) 35%,
+      rgba(0, 0, 0, .35) 65%,
+      rgba(0, 0, 0, .8) 100%
+    );
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  &__content {
+    bottom: 90px;
+    color: #fff;
+    left: 0;
+    padding: 0 28px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+  }
+
+  &__genre {
+    font-size: 11px;
+    letter-spacing: 3px;
+    opacity: .8;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    font-size: 26px;
+    font-weight: bold;
+    line-height: 1.15;
+    margin-top: 8px;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, .6);
+  }
+
+  &__tagline {
+    font-size: 13px;
+    margin-top: 10px;
+    opacity: .85;
+  }
+}
