@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import rAFTimeout from '../../helpers/rAFTimeout';
 import Close from '../../components/Close';
 import { displayTemperature } from '../../helpers/units';
+import { getThemeForMonth } from '../../themes/monthlyThemes';
+import getQuoteForDate from '../../data/dailyQuote';
 import svg from '../../svg/github.svg';
 import './index.scss';
 import './transition.scss';
@@ -60,6 +62,22 @@ class Info extends PureComponent {
     return '';
   }
 
+  renderDailyQuote() {
+    const quote = getQuoteForDate();
+    const theme = getThemeForMonth();
+
+    if (!quote) {
+      return null;
+    }
+
+    return (
+      <Fragment>
+        <h1>{theme ? theme.title : 'Today'}</h1>
+        <p className="daily-quote">&ldquo;{quote}&rdquo;</p>
+      </Fragment>
+    );
+  }
+
   renderDetails() {
     const c = this.props.currentCondition || {};
     const unit = this.props.unit || 'c';
@@ -102,6 +120,7 @@ class Info extends PureComponent {
       <div ref={this.transition} className="transition"></div>
       <section ref={this.view} className={`info ${this.getStyle(this.props.show)}`}>
         <Close ref={this.close} onCloseClick={this.onInfoClose} />
+        {this.renderDailyQuote()}
         {this.renderDetails()}
         {this.renderSearch()}
         <h1>About</h1>
