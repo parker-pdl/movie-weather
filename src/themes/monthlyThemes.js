@@ -1,80 +1,117 @@
-// Monthly movie-themed color/mood config for Movie Weather.
-// One entry per calendar month (1-12). Placeholder genre-based themes --
-// swap "name" and "movieInspiration" for real per-month design direction.
-// Note: keep movieInspiration as an internal mood/design reference only --
-// avoid using real movie titles, posters, or franchise names/art in shipped
-// assets or copy (see docs/PLAN.md).
+// Monthly movie-themed config for Movie Weather.
+// One entry per calendar month (1-12): color mood, an original in-app "feature"
+// title/tagline (Parker's own invented titles -- not real movie titles, safe to
+// display directly), a splash-screen poster + theme audio, and a CSS animation
+// keyword used by the splash screen.
+//
+// Poster/audio files live in public/monthly/<month-number>/ (poster.jpg, theme.mp3).
 
 const monthlyThemes = {
   1: {
     name: "New Year Sci-Fi",
-    movieInspiration: "Futuristic, neon, fresh-start energy",
+    title: "The First Forecast",
+    genre: "Winter Adventure",
+    tagline: "A new year. A new journey. A new forecast.",
+    animation: "snowfall",
     accent: "#00e5ff",
     bg: "#0a0e1a",
   },
   2: {
     name: "Romance",
-    movieInspiration: "Warm pinks and reds, cozy indoor mood",
+    title: "Shadow's Choice",
+    genre: "Mystery Adventure",
+    tagline: "Sometimes the smallest signs reveal the biggest secrets.",
+    animation: "winter_glow",
     accent: "#ff4d6d",
     bg: "#1a0a12",
   },
   3: {
     name: "Adventure & Fantasy",
-    movieInspiration: "Lush greens, epic quest energy",
+    title: "The Winds of Change",
+    genre: "Fantasy Adventure",
+    tagline: "Every storm carries a new beginning.",
+    animation: "spring_wind",
     accent: "#4caf50",
     bg: "#0e1a10",
   },
   4: {
     name: "Animated Family",
-    movieInspiration: "Bright, playful, saturated primaries",
+    title: "When The Rain Remembers",
+    genre: "Mystery Drama",
+    tagline: "Every raindrop tells a story.",
+    animation: "rain",
     accent: "#ffb300",
     bg: "#1a160a",
   },
   5: {
     name: "Superhero Season",
-    movieInspiration: "Bold primaries, high-contrast action",
+    title: "The Garden Beyond",
+    genre: "Coming Of Age Adventure",
+    tagline: "Growth begins where dreams take root.",
+    animation: "flower_bloom",
     accent: "#e53935",
     bg: "#1a0a0a",
   },
   6: {
     name: "Summer Action",
-    movieInspiration: "Sun-bleached, high-energy blockbuster",
+    title: "Beyond The Horizon",
+    genre: "Summer Adventure",
+    tagline: "The journey starts when you step outside.",
+    animation: "sun_rays",
     accent: "#ff9800",
     bg: "#1a120a",
   },
   7: {
     name: "Blockbuster",
-    movieInspiration: "Big, glossy, cinematic gold and black",
+    title: "The Last Firework",
+    genre: "Action Adventure",
+    tagline: "Every spark begins a story.",
+    animation: "fireworks",
     accent: "#ffd700",
     bg: "#12100a",
   },
   8: {
     name: "Thriller",
-    movieInspiration: "Moody teal and shadow, tense atmosphere",
+    title: "The Golden Hour",
+    genre: "Adventure Drama",
+    tagline: "Summer's final chapter shines brightest.",
+    animation: "sunset",
     accent: "#26c6da",
     bg: "#0a1418",
   },
   9: {
     name: "Coming of Age",
-    movieInspiration: "Soft autumn tones, nostalgic warmth",
+    title: "The New Chapter",
+    genre: "Inspirational Drama",
+    tagline: "Every change creates a new beginning.",
+    animation: "fall_leaves",
     accent: "#d4a373",
     bg: "#181410",
   },
   10: {
     name: "Horror",
-    movieInspiration: "Deep purples and blacks, eerie orange accents",
+    title: "The Hollow Night",
+    genre: "Psychological Horror",
+    tagline: "Some shadows were never meant to be found.",
+    animation: "fog",
     accent: "#ff6f00",
     bg: "#0d0a14",
   },
   11: {
     name: "Family Adventure",
-    movieInspiration: "Cozy amber and forest tones",
+    title: "The Harvest Table",
+    genre: "Family Drama",
+    tagline: "The greatest stories are shared together.",
+    animation: "fall_breeze",
     accent: "#8d6e63",
     bg: "#14100c",
   },
   12: {
     name: "Holiday Classics",
-    movieInspiration: "Festive red and evergreen, warm gold accents",
+    title: "The Midnight Carol",
+    genre: "Holiday Creature Feature",
+    tagline: "Not every gift wants to be opened.",
+    animation: "snow_magic",
     accent: "#c62828",
     bg: "#0c1410",
   },
@@ -83,6 +120,14 @@ const monthlyThemes = {
 export function getThemeForMonth(date = new Date()) {
   const month = date.getMonth() + 1;
   return monthlyThemes[month];
+}
+
+export function getPosterForMonth(monthNumber) {
+  return `/monthly/${String(monthNumber).padStart(2, "0")}/poster.jpg`;
+}
+
+export function getAudioForMonth(monthNumber) {
+  return `/monthly/${String(monthNumber).padStart(2, "0")}/theme.mp3`;
 }
 
 export default monthlyThemes;
