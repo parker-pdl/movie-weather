@@ -116,6 +116,36 @@ a {
     top: 0;
     z-index: -1;
   }
+
+  // Shown whenever autoplay-with-sound got blocked by the browser, whether
+  // we're still on the splash or already on the weather screen. A tap
+  // anywhere in the app (see onAppClick in index.js) retries playback with a
+  // real user gesture attached, same trick as the splash used before the
+  // audio element lived here.
+  &__sound-hint {
+    animation: app-sound-hint-pulse 1.4s ease-in-out infinite;
+    background: rgba(0, 0, 0, .55);
+    border: 1px solid rgba(255, 255, 255, .6);
+    border-radius: 999px;
+    bottom: 46px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    left: 50%;
+    letter-spacing: .04em;
+    padding: 10px 20px;
+    pointer-events: none;
+    position: absolute;
+    text-transform: uppercase;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 30;
+  }
+}
+
+@keyframes app-sound-hint-pulse {
+  0%, 100% { opacity: .6; }
+  50% { opacity: 1; }
 }
 
 .wrapper-temperature {

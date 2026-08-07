@@ -5,8 +5,10 @@ import MonthlySplash, { TOTAL_SPLASH_MS } from '../components/MonthlySplash';
 import Error from '../components/Error';
 import rAFTimeout from '../helpers/rAFTimeout';
 import Storage from './storage';
-import monthlyThemes, { getPosterForMonth } from '../themes/monthlyThemes';
+import monthlyThemes, { getPosterForMonth, getAudioForMonth } from '../themes/monthlyThemes';
 import './index.scss';
+
+const AUDIO_PLAYED_KEY = 'movieWeather.audioPlayedDate';
 
 function hexToRgbString(hex, fallback = '10, 14, 26') {
   const match = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '');
@@ -19,9 +21,14 @@ function hexToRgbString(hex, fallback = '10, 14, 26') {
   return `${parseInt(r, 16)}, ${parseInt(g, 16)}, ${parseInt(b, 16)}`;
 }
 
+function todayKey(date = new Date()) {
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+}
+
 const currentMonth = new Date().getMonth() + 1;
 const currentTheme = monthlyThemes[currentMonth] || {};
 const backdropPoster = getPosterForMonth(currentMonth);
+const themeAudioSrc = getAudioForMonth(currentMonth);
 const moodBgRgb = hexToRgbString(currentTheme.bg);
 
 class App extends Component {
@@ -29,19 +36,57 @@ class App extends Component {
     super();
 
     this.loader = React.createRef();
+    this.audio = React.createRef();
     this.onInfoClick = this.onInfoClick.bind(this);
     this.onInfoClose = this.onInfoClose.bind(this);
     this.onRefreshClick = this.onRefreshClick.bind(this);
     this.onGPSLocationClick = this.onGPSLocationClick.bind(this);
     this.onUnitToggle = this.onUnitToggle.bind(this);
     this.onSearchLocation = this.onSearchLocation.bind(this);
+    this.onAppClick = this.onAppClick.bind(this);
 
     this.storage = new Storage();
-    this.state = { ...this.storage.data };
+    this.state = { ...this.storage.data, audioBlocked: false };
+  }
+
+  // The theme music lives here at the App level (not inside <MonthlySplash>)
+  // so it keeps looping for as long as the app is open, instead of stopping
+  // when the splash unmounts. `loop` on the <audio> tag handles the repeat.
+  tryPlayAudioOnce(userInitiated = false) {
+    const alreadyPlayedToday = window.localStorage.getItem(AUDIO_PLAYED_KEY) === todayKey();
+
+    // A direct tap anywhere in the app is a real user gesture and should
+    // always be allowed to (re)try playback, even if the silent
+    // auto-attempt already ran once today.
+    if ((alreadyPlayedToday && !userInitiated) || !this.audio.current) {
+      return;
+    }
+
+    const playPromise = this.audio.current.play();
+
+    if (playPromise && playPromise.then) {
+      playPromise
+        .then(() => {
+          window.localStorage.setItem(AUDIO_PLAYED_KEY, todayKey());
+          this.setState({ audioBlocked: false });
+        })
+        .catch(() => {
+          // Most browsers block audio-with-sound from autoplaying until the
+          // user has interacted with the page at least once. That's not an
+          // error -- show the "Tap for sound" hint so a real tap anywhere in
+          // the app can retry with a genuine user gesture attached.
+          this.setState({ audioBlocked: true });
+        });
+    }
+  }
+
+  onAppClick() {
+    this.tryPlayAudioOnce(true);
   }
 
   async init() {
     rAFTimeout(() => this.loader.current.animateIn(), 100);
+    this.tryPlayAudioOnce();
 
     // The monthly splash (poster + theme music + daily quote) should get
     // real screen time regardless of how fast the weather fetch comes back
@@ -170,6 +215,7 @@ class App extends Component {
     return (
       <div
         className="App"
+        onClick={this.onAppClick}
         style={{
           '--app-accent': currentTheme.accent || '#297af9',
           '--app-mood-bg-rgb': moodBgRgb,
@@ -192,6 +238,19 @@ class App extends Component {
         <div className="App__vignette" aria-hidden="true" />
         <div className="App__grain" aria-hidden="true" />
         <div className="App__watermark" aria-hidden="true" style={{ backgroundImage: 'url(/brand-watermark.png)' }} />
+        {
+          // Lives here (not inside MonthlySplash) so it survives the splash
+          // unmounting and keeps looping the whole time the app is open.
+        }
+        <audio ref={this.audio} src={themeAudioSrc} loop preload="auto" />
+        {
+          // Visible whenever autoplay got blocked, whether we're still on
+          // the splash or already on the weather screen -- any tap anywhere
+          // in the app (see onAppClick) will retry playback.
+          this.state.audioBlocked && (
+            <div className="App__sound-hint" aria-hidden="true">🔊 Tap for music</div>
+          )
+        }
         {
           !this.state.dataLoaded ? <MonthlySplash ref={this.loader} /> : this.display()
         }
