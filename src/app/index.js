@@ -5,7 +5,24 @@ import MonthlySplash, { TOTAL_SPLASH_MS } from '../components/MonthlySplash';
 import Error from '../components/Error';
 import rAFTimeout from '../helpers/rAFTimeout';
 import Storage from './storage';
+import monthlyThemes, { getPosterForMonth } from '../themes/monthlyThemes';
 import './index.scss';
+
+function hexToRgbString(hex, fallback = '10, 14, 26') {
+  const match = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '');
+
+  if (!match) {
+    return fallback;
+  }
+
+  const [, r, g, b] = match;
+  return `${parseInt(r, 16)}, ${parseInt(g, 16)}, ${parseInt(b, 16)}`;
+}
+
+const currentMonth = new Date().getMonth() + 1;
+const currentTheme = monthlyThemes[currentMonth] || {};
+const backdropPoster = getPosterForMonth(currentMonth);
+const moodBgRgb = hexToRgbString(currentTheme.bg);
 
 class App extends Component {
   constructor() {
@@ -151,7 +168,29 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div
+        className="App"
+        style={{
+          '--app-accent': currentTheme.accent || '#297af9',
+          '--app-mood-bg-rgb': moodBgRgb,
+        }}
+      >
+        {
+          // A softened, darkened backdrop of this month's poster -- gives the
+          // whole app (not just the splash) a movie-backdrop feel instead of
+          // the flat solid-blue background. Hidden while the splash itself is
+          // showing since the splash already displays the poster at full
+          // strength.
+          this.state.dataLoaded && (
+            <div
+              className="App__backdrop"
+              aria-hidden="true"
+              style={{ backgroundImage: `url(${backdropPoster})` }}
+            />
+          )
+        }
+        <div className="App__vignette" aria-hidden="true" />
+        <div className="App__grain" aria-hidden="true" />
         <div className="App__watermark" aria-hidden="true" style={{ backgroundImage: 'url(/brand-watermark.png)' }} />
         {
           !this.state.dataLoaded ? <MonthlySplash ref={this.loader} /> : this.display()

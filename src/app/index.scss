@@ -28,6 +28,75 @@ a {
   position: relative;
   overflow: hidden;
 
+  // A softened, darkened version of the month's movie poster behind
+  // everything -- gives the weather screen a "movie backdrop" feel instead
+  // of a flat solid-blue background, while a color-matched gradient (tinted
+  // with the month's accent/mood colors) keeps the weather info readable
+  // on top of it.
+  &__backdrop {
+    background-position: center;
+    background-size: cover;
+    bottom: -20px;
+    filter: blur(18px) saturate(1.15);
+    left: -20px;
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    transform: scale(1.1);
+    z-index: -3;
+
+    &::after {
+      --mood-rgb: var(--app-mood-bg-rgb, 10, 14, 26);
+      background: linear-gradient(
+        to bottom,
+        rgba(var(--mood-rgb), .78),
+        rgba(var(--mood-rgb), .55) 45%,
+        rgba(41, 122, 249, .72) 100%
+      );
+      bottom: 0;
+      content: '';
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+
+  // Soft dark falloff at the edges -- a classic cinematic vignette.
+  &__vignette {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0) 45%,
+      rgba(0, 0, 0, .35) 100%
+    );
+    bottom: 0;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: -2;
+  }
+
+  // Faint film-grain texture for a bit of analog/cinema texture instead of
+  // a flat digital gradient. Pure CSS (no image asset needed).
+  &__grain {
+    background-image:
+      radial-gradient(rgba(255, 255, 255, .5) .5px, transparent .5px),
+      radial-gradient(rgba(255, 255, 255, .35) .5px, transparent .5px);
+    background-position: 0 0, 2px 3px;
+    background-size: 4px 4px, 5px 5px;
+    bottom: 0;
+    left: 0;
+    mix-blend-mode: overlay;
+    opacity: .12;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: -1;
+  }
+
   &__watermark {
     background-position: center;
     background-repeat: no-repeat;
@@ -39,7 +108,7 @@ a {
     position: absolute;
     right: 0;
     top: 0;
-    z-index: 0;
+    z-index: -1;
   }
 }
 
