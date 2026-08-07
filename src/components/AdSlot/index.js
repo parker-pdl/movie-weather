@@ -3,38 +3,61 @@ import PropTypes from 'prop-types';
 import './index.scss';
 
 /*
- * Placeholder ad slot -- future use.
+ * Real Google AdSense banner slot (manual ad unit, not auto-ads).
  *
- * Parker plans to add in-app ads later (same ad networks used on the
- * Hostinger sites, e.g. AdSense/PropellerAds/Infolinks). Rather than bolt
- * that in later and risk breaking the layout again, this reserves a safe,
- * fixed spot for a banner-style ad unit that:
- *   - sits in a corner that's already proven not to collide with the
- *     weather data (see the Home__marquee / Home__location-hint /
- *     App__watermark layout notes in src/app/index.scss -- those all had
- *     to be pulled out of normal document flow because .App is a flex
- *     column with justify-content: space-between, and this component
- *     follows that same pattern from the start)
- *   - renders NOTHING by default (`active` prop defaults to false), so it
- *     has zero effect on the app until Parker actually has an ad network
- *     script/unit ready to drop in
+ * Manual, not auto-ads, on purpose: it lets the app hide ads for anyone
+ * who buys "Remove Ads" (see src/components/RemoveAds) without touching
+ * AdSense's site-wide settings. `active` is controlled by Home/index.js
+ * based on the movieWeather.adsRemoved localStorage flag.
  *
- * To turn it on:
- *   1. Paste the ad network's site-verification/loader script tag into
- *      public/index.html (see the comment there).
- *   2. Pass `active` (and the ad unit's own markup/script as children,
- *      or swap the body of render() for that network's React component)
- *      to <AdSlot> where it's rendered in src/app/Home/index.js.
+ * TODO (Parker, one-time setup):
+ *   1. In AdSense, add + get weather.parkerdata.link approved as a site
+ *      on the pub-2328685696786328 account (ads.txt is already live at
+ *      public/ads.txt, and the loader script is already in
+ *      public/index.html).
+ *   2. Once approved, create a manual "Display ad" unit for this app and
+ *      copy its ad slot ID (a number, e.g. "1234567890").
+ *   3. Paste that number into AD_SLOT_ID below and redeploy.
+ * Until step 3 is done, this renders an empty reserved space -- no ad
+ * request is made with a placeholder slot ID.
  */
+const AD_SLOT_ID = 'REPLACE_WITH_ADSENSE_AD_SLOT_ID';
+const AD_CLIENT_ID = 'ca-pub-2328685696786328';
+
 class AdSlot extends PureComponent {
+  componentDidMount() {
+    if (!this.props.active || AD_SLOT_ID === 'REPLACE_WITH_ADSENSE_AD_SLOT_ID') {
+      return;
+    }
+
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      // AdSense script not loaded yet / blocked -- fail silently, the
+      // reserved space just stays empty instead of breaking the app.
+    }
+  }
+
   render() {
     if (!this.props.active) {
       return null;
     }
 
+    if (AD_SLOT_ID === 'REPLACE_WITH_ADSENSE_AD_SLOT_ID') {
+      // Reserved space, no ad requested yet -- see the TODO above.
+      return <div className="AdSlot AdSlot--pending" aria-hidden="true" />;
+    }
+
     return (
-      <div className="AdSlot" id="movie-weather-ad-slot" data-ad-slot={this.props.slotId || 'default'}>
-        {this.props.children}
+      <div className="AdSlot" id="movie-weather-ad-slot">
+        <ins
+          className="adsbygoogle"
+          style={{ display: 'block', width: '100%', height: '100%' }}
+          data-ad-client={AD_CLIENT_ID}
+          data-ad-slot={AD_SLOT_ID}
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
       </div>
     );
   }
@@ -42,8 +65,6 @@ class AdSlot extends PureComponent {
 
 AdSlot.propTypes = {
   active: PropTypes.bool,
-  slotId: PropTypes.string,
-  children: PropTypes.node,
 };
 
 AdSlot.defaultProps = {
