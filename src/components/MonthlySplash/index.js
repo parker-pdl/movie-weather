@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import Loader from '../Loader';
 import monthlyThemes, { getPosterForMonth, getAudioForMonth } from '../../themes/monthlyThemes';
 import getQuoteForDate from '../../data/dailyQuote';
 import './index.scss';
@@ -27,7 +26,6 @@ class MonthlySplash extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.loader = React.createRef();
     this.audio = React.createRef();
     this.root = React.createRef();
 
@@ -46,10 +44,6 @@ class MonthlySplash extends PureComponent {
 
   // Exposed so src/app/index.js can drive this the same way it drove <Loader>.
   animateIn() {
-    if (this.loader.current) {
-      this.loader.current.animateIn();
-    }
-
     this.tryPlayAudioOnce();
 
     // Poster holds for POSTER_DURATION_MS, then crossfades to black with the
@@ -62,10 +56,6 @@ class MonthlySplash extends PureComponent {
   animateOut() {
     if (this.root.current) {
       this.root.current.classList.add('monthly-splash--fade-out');
-    }
-
-    if (this.loader.current) {
-      this.loader.current.animateOut();
     }
 
     this.fadeOutAudio();
@@ -166,8 +156,6 @@ class MonthlySplash extends PureComponent {
         )}
 
         <audio ref={this.audio} src={audioSrc} preload="auto" />
-
-        <Loader ref={this.loader} />
       </div>
     );
   }
