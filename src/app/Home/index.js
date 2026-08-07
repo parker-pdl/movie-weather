@@ -9,6 +9,7 @@ import GPSLocation from '../../components/GPSLocation';
 import Info from '../../components/Info';
 import DateCurrent from '../../components/DateCurrent';
 import Refresh from '../../components/Refresh';
+import AdSlot from '../../components/AdSlot';
 import PropTypes from 'prop-types';
 import { displayTemperature } from '../../helpers/units';
 import monthlyThemes from '../../themes/monthlyThemes';
@@ -82,13 +83,6 @@ class Home extends PureComponent {
         )
       }
       <Location location={this.props.currentCondition.location} />
-      {
-        !this.state.locationHintDismissed && (
-          <button type="button" className="Home__location-hint" onClick={this.onDismissLocationHint}>
-            📍 Local forecasts need your location — tap the crosshair above anytime to update it. Tap to dismiss.
-          </button>
-        )
-      }
       <DateCurrent date={this.props.currentCondition.date} />
       <Temperature weather={this.props.currentCondition.weather} temperature={displayTemperature(this.props.currentCondition.temperature, unit)} unit={unit} onUnitToggle={this.props.onUnitToggle} />
       <Refresh onClick={this.props.onRefreshClick} updating={this.props.updating} time={this.props.lastUpdate} />
@@ -101,6 +95,23 @@ class Home extends PureComponent {
         </div>
         <Navigation currentForecast={this.state.currentForecast} />
       </section>
+      {
+        // position: absolute (see src/app/index.scss) so it doesn't join
+        // .App's flex space-between distribution and shift Location /
+        // Temperature / the forecast section -- that's what caused the
+        // date/location overlap the marquee introduced.
+        !this.state.locationHintDismissed && (
+          <button type="button" className="Home__location-hint" onClick={this.onDismissLocationHint}>
+            📍 Local forecasts need your location — tap the crosshair above anytime to update it. Tap to dismiss.
+          </button>
+        )
+      }
+      {
+        // Inactive placeholder -- renders nothing until Parker has an ad
+        // network ready and this is flipped to `active`. See
+        // src/components/AdSlot/index.js for how to wire a real ad unit in.
+      }
+      <AdSlot active={false} />
     </Fragment>
   }
 }
