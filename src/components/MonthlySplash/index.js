@@ -1,9 +1,7 @@
 import React, { PureComponent } from 'react';
-import monthlyThemes, { getPosterForMonth, getAudioForMonth } from '../../themes/monthlyThemes';
+import monthlyThemes, { getPosterForMonth } from '../../themes/monthlyThemes';
 import getQuoteForDate from '../../data/dailyQuote';
 import './index.scss';
-
-const AUDIO_PLAYED_KEY = 'movieWeather.audioPlayedDate';
 
 // Poster is on screen this long before crossfading to black + the quote.
 export const POSTER_DURATION_MS = 4000;
@@ -18,15 +16,10 @@ export const QUOTE_HOLD_MS = 5000;
 // so the poster and the quote both get real screen time.
 export const TOTAL_SPLASH_MS = POSTER_DURATION_MS + CROSSFADE_MS + QUOTE_HOLD_MS;
 
-function todayKey(date = new Date()) {
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-}
-
 class MonthlySplash extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.audio = React.createRef();
     this.root = React.createRef();
 
     const now = new Date();
@@ -35,7 +28,7 @@ class MonthlySplash extends PureComponent {
     this.theme = monthlyThemes[month] || {};
     this.month = month;
     this.quote = getQuoteForDate(now);
-    this.state = { audioBlocked: false, phase: 'poster' };
+    this.state = { phase: 'poster' };
   }
 
   componentWillUnmount() {
@@ -44,8 +37,6 @@ class MonthlySplash extends PureComponent {
 
   // Exposed so src/app/index.js can drive this the same way it drove <Loader>.
   animateIn() {
-    this.tryPlayAudioOnce();
-
     // Poster holds for POSTER_DURATION_MS, then crossfades to black with the
     // day's quote fading in on top of it.
     this.posterTimer = setTimeout(() => {
@@ -58,67 +49,17 @@ class MonthlySplash extends PureComponent {
       this.root.current.classList.add('monthly-splash--fade-out');
     }
 
-    this.fadeOutAudio();
-  }
-
-  tryPlayAudioOnce(userInitiated = false) {
-    const alreadyPlayedToday = window.localStorage.getItem(AUDIO_PLAYED_KEY) === todayKey();
-
-    // A direct tap on the splash is a real user gesture and should always be
-    // allowed to (re)try playback, even if the silent auto-attempt already
-    // ran once today -- that's the whole point of the "Tap for sound" hint.
-    if ((alreadyPlayedToday && !userInitiated) || !this.audio.current) {
-      return;
-    }
-
-    const playPromise = this.audio.current.play();
-
-    if (playPromise && playPromise.then) {
-      playPromise
-        .then(() => {
-          window.localStorage.setItem(AUDIO_PLAYED_KEY, todayKey());
-          this.setState({ audioBlocked: false });
-        })
-        .catch(() => {
-          // Most browsers block audio-with-sound from autoplaying until the
-          // user has interacted with the page at least once. That's not an
-          // error -- show the "Tap for sound" hint so the click handler on
-          // the splash can retry with a real user gesture attached.
-          this.setState({ audioBlocked: true });
-        });
-    }
-  }
-
-  fadeOutAudio() {
-    const audioEl = this.audio.current;
-
-    if (!audioEl || audioEl.paused) {
-      return;
-    }
-
-    const fadeStep = 0.08;
-    const fadeInterval = setInterval(() => {
-      if (audioEl.volume - fadeStep <= 0) {
-        audioEl.pause();
-        clearInterval(fadeInterval);
-      } else {
-        audioEl.volume -= fadeStep;
-      }
-    }, 60);
+    // Theme music now lives at the App level and keeps looping past the
+    // splash, so there's nothing audio-related to fade out here anymore.
   }
 
   render() {
     const { title, genre, tagline } = this.theme;
     const poster = getPosterForMonth(this.month);
-    const audioSrc = getAudioForMonth(this.month);
     const showingQuote = this.state.phase === 'quote';
 
     return (
-      <div
-        ref={this.root}
-        className="monthly-splash"
-        onClick={() => this.tryPlayAudioOnce(true)}
-      >
+      <div ref={this.root} className="monthly-splash">
         <div
           className={
             'monthly-splash__poster' +
@@ -146,16 +87,6 @@ class MonthlySplash extends PureComponent {
             <div className="monthly-splash__quote-text">{this.quote}</div>
           </div>
         )}
-
-        {/* Rendered at the root (not inside the poster layer) so it stays on
-            screen through BOTH the poster and quote phases -- otherwise it
-            was disappearing after 4s when the poster faded out, well before
-            the splash actually ended. */}
-        {this.state.audioBlocked && (
-          <div className="monthly-splash__sound-hint">🔊 Tap screen for music</div>
-        )}
-
-        <audio ref={this.audio} src={audioSrc} preload="auto" />
       </div>
     );
   }

@@ -80,26 +80,6 @@ $crossfade-duration: .9s;
     opacity: .85;
   }
 
-  &__sound-hint {
-    animation: monthly-splash-pulse 1.4s ease-in-out infinite;
-    background: rgba(0, 0, 0, .55);
-    border: 1px solid rgba(255, 255, 255, .6);
-    border-radius: 999px;
-    bottom: 46px;
-    color: #fff;
-    font-size: 14px;
-    font-weight: 600;
-    left: 50%;
-    letter-spacing: .04em;
-    padding: 10px 20px;
-    pointer-events: none;
-    position: absolute;
-    text-transform: uppercase;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    z-index: 5;
-  }
-
   &__quote {
     align-items: center;
     bottom: 0;
@@ -137,9 +117,4 @@ $crossfade-duration: .9s;
     max-width: 340px;
     text-shadow: 0 2px 16px rgba(0, 0, 0, .5);
   }
-}
-
-@keyframes monthly-splash-pulse {
-  0%, 100% { opacity: .6; }
-  50% { opacity: 1; }
 }
