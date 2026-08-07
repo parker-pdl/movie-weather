@@ -103,18 +103,23 @@ a {
     z-index: -1;
   }
 
+  // Small logo badge, bottom-right corner -- previously a giant (320px),
+  // nearly-invisible (opacity .08) ghost centered behind the whole screen,
+  // which made it pointless as branding since it was diluted across the
+  // entire card. Moved out of the data-dense center and turned up so it
+  // actually reads as a mark, without sitting on top of any weather info.
   &__watermark {
     background-position: center;
     background-repeat: no-repeat;
-    background-size: 320px 320px;
-    bottom: 0;
-    left: 0;
-    opacity: .08;
+    background-size: contain;
+    bottom: 14px;
+    height: 56px;
+    opacity: .5;
     pointer-events: none;
     position: absolute;
-    right: 0;
-    top: 0;
-    z-index: -1;
+    right: 14px;
+    width: 56px;
+    z-index: 1;
   }
 
   // Shown whenever autoplay-with-sound got blocked by the browser, whether
@@ -187,6 +192,14 @@ a {
 // Theater-marquee style header on the weather screen -- reuses the same
 // monthly theme title the splash just showed, so Home doesn't feel like a
 // plain weather UI once the movie intro fades out.
+//
+// position: absolute (not normal flow) is deliberate: .App is a flex column
+// with justify-content: space-between, so every normal-flow child -- along
+// with Location/Temperature/forecasts -- shares in that space-between
+// distribution. Adding the marquee as a normal-flow item pushed Location
+// down while DateCurrent/Refresh stayed put at their own fixed absolute
+// offsets, causing the overlap. Taking it out of flow entirely avoids
+// disturbing that layout.
 .Home__marquee {
   align-items: center;
   color: var(--app-accent, #297af9);
@@ -194,9 +207,14 @@ a {
   font-size: 11px;
   font-weight: 600;
   justify-content: center;
+  left: 50%;
   letter-spacing: .12em;
-  margin-top: 18px;
+  max-width: calc(100% - 130px);
+  position: absolute;
   text-transform: uppercase;
+  top: 24px;
+  transform: translateX(-50%);
+  z-index: 2;
 }
 
 .Home__marquee-text {
@@ -218,21 +236,29 @@ a {
 // One-time (dismissible, remembered via localStorage) reminder that the app
 // needs location data -- there was previously no user-facing messaging
 // about this at all, silent no-op if GPS permission was denied.
+//
+// Also position: absolute for the same reason as the marquee above --
+// normal flow here shares in .App's space-between distribution and shifts
+// everything else. Anchored to the bottom, above the forecast/navigation
+// area, clear of the watermark badge in the opposite (bottom-right) corner.
 .Home__location-hint {
   appearance: none;
-  background: rgba(0, 0, 0, .35);
+  background: rgba(0, 0, 0, .55);
   border: 1px solid rgba(255, 255, 255, .25);
   border-radius: 10px;
+  bottom: 8px;
   color: rgba(255, 255, 255, .85);
   cursor: pointer;
-  display: block;
   font-family: inherit;
   font-size: 11px;
+  left: 50%;
   line-height: 1.5;
-  margin: 10px auto 0;
-  max-width: 300px;
+  max-width: 260px;
   padding: 8px 12px;
+  position: absolute;
   text-align: center;
+  transform: translateX(-50%);
+  z-index: 2;
 }
 
 .forecasts {
