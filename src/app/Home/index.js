@@ -11,6 +11,12 @@ import DateCurrent from '../../components/DateCurrent';
 import Refresh from '../../components/Refresh';
 import PropTypes from 'prop-types';
 import { displayTemperature } from '../../helpers/units';
+import monthlyThemes from '../../themes/monthlyThemes';
+
+const LOCATION_HINT_DISMISSED_KEY = 'movieWeather.locationHintDismissed';
+
+const currentMonth = new Date().getMonth() + 1;
+const currentTheme = monthlyThemes[currentMonth] || {};
 
 class Home extends PureComponent {
   constructor() {
@@ -19,7 +25,15 @@ class Home extends PureComponent {
     this.state = {
       currentForecast: 'hourly',
       forecastIndex: ['hourly', 'daily'],
+      locationHintDismissed: window.localStorage.getItem(LOCATION_HINT_DISMISSED_KEY) === 'true',
     };
+
+    this.onDismissLocationHint = this.onDismissLocationHint.bind(this);
+  }
+
+  onDismissLocationHint() {
+    window.localStorage.setItem(LOCATION_HINT_DISMISSED_KEY, 'true');
+    this.setState({ locationHintDismissed: true });
   }
 
   componentDidMount() {
@@ -54,7 +68,27 @@ class Home extends PureComponent {
     return <Fragment>
       <GPSLocation onGPSLocationClick={this.props.onGPSLocationClick} />
       <Info onInfoClick={this.props.onInfoClick} onInfoClose={this.props.onInfoClose} />
+      {
+        // A small theater-marquee style header, tying the weather screen
+        // back to the same monthly movie theme the splash just showed --
+        // otherwise Home was just a plain weather UI with no movie identity
+        // of its own once the splash faded out.
+        currentTheme.title && (
+          <div className="Home__marquee">
+            <span className="Home__marquee-dot" aria-hidden="true" />
+            <span className="Home__marquee-text">Now Screening &middot; {currentTheme.title}</span>
+            <span className="Home__marquee-dot" aria-hidden="true" />
+          </div>
+        )
+      }
       <Location location={this.props.currentCondition.location} />
+      {
+        !this.state.locationHintDismissed && (
+          <button type="button" className="Home__location-hint" onClick={this.onDismissLocationHint}>
+            📍 Local forecasts need your location — tap the crosshair above anytime to update it. Tap to dismiss.
+          </button>
+        )
+      }
       <DateCurrent date={this.props.currentCondition.date} />
       <Temperature weather={this.props.currentCondition.weather} temperature={displayTemperature(this.props.currentCondition.temperature, unit)} unit={unit} onUnitToggle={this.props.onUnitToggle} />
       <Refresh onClick={this.props.onRefreshClick} updating={this.props.updating} time={this.props.lastUpdate} />
