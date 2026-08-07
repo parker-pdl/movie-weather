@@ -152,6 +152,87 @@ a {
   margin-top: 60px;
   position: relative;
   transform: translateY(20px);
+
+  // Thin film-strip accents above/below the main reading, tinted with this
+  // month's accent color -- ties the temperature back to the marquee/poster
+  // treatment instead of it just being a plain floating number.
+  &::before,
+  &::after {
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--app-accent, #297af9) 0,
+      var(--app-accent, #297af9) 6px,
+      transparent 6px,
+      transparent 14px
+    );
+    content: '';
+    display: block;
+    height: 2px;
+    left: 50%;
+    opacity: .55;
+    position: absolute;
+    transform: translateX(-50%);
+    width: 120px;
+  }
+
+  &::before {
+    top: -14px;
+  }
+
+  &::after {
+    bottom: -18px;
+  }
+}
+
+// Theater-marquee style header on the weather screen -- reuses the same
+// monthly theme title the splash just showed, so Home doesn't feel like a
+// plain weather UI once the movie intro fades out.
+.Home__marquee {
+  align-items: center;
+  color: var(--app-accent, #297af9);
+  display: flex;
+  font-size: 11px;
+  font-weight: 600;
+  justify-content: center;
+  letter-spacing: .12em;
+  margin-top: 18px;
+  text-transform: uppercase;
+}
+
+.Home__marquee-text {
+  margin: 0 8px;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Home__marquee-dot {
+  background: currentColor;
+  border-radius: 50%;
+  flex-shrink: 0;
+  height: 4px;
+  width: 4px;
+}
+
+// One-time (dismissible, remembered via localStorage) reminder that the app
+// needs location data -- there was previously no user-facing messaging
+// about this at all, silent no-op if GPS permission was denied.
+.Home__location-hint {
+  appearance: none;
+  background: rgba(0, 0, 0, .35);
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, .85);
+  cursor: pointer;
+  display: block;
+  font-family: inherit;
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 10px auto 0;
+  max-width: 300px;
+  padding: 8px 12px;
+  text-align: center;
 }
 
 .forecasts {

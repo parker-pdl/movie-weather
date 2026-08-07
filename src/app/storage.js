@@ -19,7 +19,7 @@ const DEFAULT_LOCATION = { latitude: 34.0522, longitude: -118.2437, name: 'Los A
 export default class Storage {
   constructor() {
     this.openMeteo = new OpenMeteo();
-    this.data = { ...initialState, unit: localStorage.getItem(UNIT_KEY) || 'c' };
+    this.data = { ...initialState, unit: localStorage.getItem(UNIT_KEY) || 'f' };
     this.currentDate = new Date();
   }
 
