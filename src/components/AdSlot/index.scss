@@ -1,0 +1,17 @@
+// Reserved banner-style slot, bottom of the screen, above the safe-area
+// edge. Sized for a standard 320x50 mobile banner unit -- the most common
+// ad network default -- and kept out of normal document flow for the same
+// reason as Home__marquee / Home__location-hint / App__watermark (see
+// src/app/index.scss): .App is a flex column with
+// justify-content: space-between, so anything in normal flow shifts every
+// other data element. This only renders at all once <AdSlot active> is set.
+.AdSlot {
+  bottom: 0;
+  left: 50%;
+  max-width: 320px;
+  min-height: 50px;
+  position: absolute;
+  transform: translateX(-50%);
+  width: 100%;
+  z-index: 3;
+}
