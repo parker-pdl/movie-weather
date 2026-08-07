@@ -1,10 +1,12 @@
+// Kept in sync with CROSSFADE_MS in index.js.
+$crossfade-duration: .9s;
+
 .monthly-splash {
   background-color: #05060a;
-  background-position: center;
-  background-size: cover;
   bottom: 0;
   left: 0;
   opacity: 1;
+  overflow: hidden;
   position: absolute;
   right: 0;
   top: 0;
@@ -13,6 +15,23 @@
 
   &--fade-out {
     opacity: 0;
+  }
+
+  &__poster {
+    background-position: center;
+    background-size: cover;
+    bottom: 0;
+    left: 0;
+    opacity: 1;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: opacity $crossfade-duration ease;
+
+    &--hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
   }
 
   &__scrim {
@@ -71,6 +90,44 @@
     margin-top: 16px;
     padding: 6px 14px;
     text-transform: uppercase;
+  }
+
+  &__quote {
+    align-items: center;
+    bottom: 0;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    left: 0;
+    opacity: 0;
+    padding: 0 36px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    transition: opacity $crossfade-duration ease;
+
+    &--visible {
+      opacity: 1;
+    }
+  }
+
+  &__quote-mark {
+    color: rgba(255, 255, 255, .35);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 64px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  &__quote-text {
+    font-size: 17px;
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.5;
+    max-width: 340px;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, .5);
   }
 }
 

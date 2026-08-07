@@ -1,9 +1,23 @@
 import React, { PureComponent } from 'react';
 import Loader from '../Loader';
 import monthlyThemes, { getPosterForMonth, getAudioForMonth } from '../../themes/monthlyThemes';
+import getQuoteForDate from '../../data/dailyQuote';
 import './index.scss';
 
 const AUDIO_PLAYED_KEY = 'movieWeather.audioPlayedDate';
+
+// Poster is on screen this long before crossfading to black + the quote.
+export const POSTER_DURATION_MS = 4000;
+// How long the poster-to-black crossfade itself takes (CSS transition, kept
+// in sync with index.scss's $crossfade-duration).
+export const CROSSFADE_MS = 900;
+// How long the quote stays fully visible on black before src/app/index.js
+// is expected to call animateOut().
+export const QUOTE_HOLD_MS = 3000;
+// Total recommended minimum splash time -- src/app/index.js waits at least
+// this long (in addition to the weather fetch) before dismissing the splash,
+// so the poster and the quote both get real screen time.
+export const TOTAL_SPLASH_MS = POSTER_DURATION_MS + CROSSFADE_MS + QUOTE_HOLD_MS;
 
 function todayKey(date = new Date()) {
   return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -22,7 +36,12 @@ class MonthlySplash extends PureComponent {
 
     this.theme = monthlyThemes[month] || {};
     this.month = month;
-    this.state = { audioBlocked: false };
+    this.quote = getQuoteForDate(now);
+    this.state = { audioBlocked: false, phase: 'poster' };
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.posterTimer);
   }
 
   // Exposed so src/app/index.js can drive this the same way it drove <Loader>.
@@ -32,6 +51,12 @@ class MonthlySplash extends PureComponent {
     }
 
     this.tryPlayAudioOnce();
+
+    // Poster holds for POSTER_DURATION_MS, then crossfades to black with the
+    // day's quote fading in on top of it.
+    this.posterTimer = setTimeout(() => {
+      this.setState({ phase: 'quote' });
+    }, POSTER_DURATION_MS);
   }
 
   animateOut() {
@@ -96,26 +121,46 @@ class MonthlySplash extends PureComponent {
     const { title, genre, tagline } = this.theme;
     const poster = getPosterForMonth(this.month);
     const audioSrc = getAudioForMonth(this.month);
+    const showingQuote = this.state.phase === 'quote';
 
     return (
       <div
         ref={this.root}
         className="monthly-splash"
-        style={{ backgroundImage: `url(${poster})` }}
         onClick={() => this.tryPlayAudioOnce(true)}
       >
-        <div className="monthly-splash__scrim" />
+        <div
+          className={
+            'monthly-splash__poster' +
+            (showingQuote ? ' monthly-splash__poster--hidden' : '')
+          }
+          style={{ backgroundImage: `url(${poster})` }}
+        >
+          <div className="monthly-splash__scrim" />
+
+          <div className="monthly-splash__content">
+            {genre && <div className="monthly-splash__genre">{genre}</div>}
+            {title && <div className="monthly-splash__title">{title}</div>}
+            {tagline && <div className="monthly-splash__tagline">{tagline}</div>}
+            {this.state.audioBlocked && (
+              <div className="monthly-splash__sound-hint">Tap for sound</div>
+            )}
+          </div>
+        </div>
+
+        {this.quote && (
+          <div
+            className={
+              'monthly-splash__quote' +
+              (showingQuote ? ' monthly-splash__quote--visible' : '')
+            }
+          >
+            <div className="monthly-splash__quote-mark">&ldquo;</div>
+            <div className="monthly-splash__quote-text">{this.quote}</div>
+          </div>
+        )}
 
         <audio ref={this.audio} src={audioSrc} preload="auto" />
-
-        <div className="monthly-splash__content">
-          {genre && <div className="monthly-splash__genre">{genre}</div>}
-          {title && <div className="monthly-splash__title">{title}</div>}
-          {tagline && <div className="monthly-splash__tagline">{tagline}</div>}
-          {this.state.audioBlocked && (
-            <div className="monthly-splash__sound-hint">Tap for sound</div>
-          )}
-        </div>
 
         <Loader ref={this.loader} />
       </div>
