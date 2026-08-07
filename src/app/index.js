@@ -26,7 +26,16 @@ class App extends Component {
   async init() {
     rAFTimeout(() => this.loader.current.animateIn(), 100);
 
-    await this.storage.fetch();
+    // The monthly splash (poster + theme music) should get real screen time
+    // regardless of how fast the weather fetch comes back -- on a fast
+    // connection the fetch alone was resolving in a few hundred ms, so the
+    // poster/music barely had a chance to show before fading out. Wait for
+    // BOTH the fetch and a minimum splash duration before starting the
+    // fade-out.
+    const MIN_SPLASH_MS = 4500;
+    const minSplashTimer = new Promise((resolve) => setTimeout(resolve, MIN_SPLASH_MS));
+
+    await Promise.all([this.storage.fetch(), minSplashTimer]);
 
     rAFTimeout(() => {
       this.loader.current.animateOut();
