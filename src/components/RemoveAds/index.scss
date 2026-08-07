@@ -1,0 +1,27 @@
+// Same rule as every other supplemental element added to Home/App: keep it
+// out of normal document flow, since .App is a flex column with
+// justify-content: space-between and anything in normal flow shifts the
+// weather data around (see the layout notes in src/app/index.scss).
+//
+// Placed just above the ad slot at the bottom, opposite side from the
+// watermark badge -- clear of DateCurrent/Refresh (top area) and the
+// forecast strip (middle).
+.RemoveAds {
+  appearance: none;
+  background: rgba(0, 0, 0, .55);
+  border: 1px solid rgba(255, 255, 255, .3);
+  border-radius: 999px;
+  bottom: 62px;
+  color: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  left: 50%;
+  letter-spacing: .03em;
+  padding: 7px 14px;
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 3;
+}
