@@ -27,6 +27,12 @@ a {
   justify-content: space-between;
   position: relative;
   overflow: hidden;
+  // Without an explicit z-index, .App doesn't form its own stacking context,
+  // so its negative-z-index children (backdrop/vignette/grain below) escape
+  // upward and paint behind the WHOLE .App box instead of just behind its
+  // content -- which made the cinematic backdrop invisible. z-index: 0 here
+  // contains them properly inside .App's own stacking context.
+  z-index: 0;
 
   // A softened, darkened version of the month's movie poster behind
   // everything -- gives the weather screen a "movie backdrop" feel instead
