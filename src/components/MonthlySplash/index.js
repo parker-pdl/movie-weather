@@ -142,9 +142,6 @@ class MonthlySplash extends PureComponent {
             {genre && <div className="monthly-splash__genre">{genre}</div>}
             {title && <div className="monthly-splash__title">{title}</div>}
             {tagline && <div className="monthly-splash__tagline">{tagline}</div>}
-            {this.state.audioBlocked && (
-              <div className="monthly-splash__sound-hint">Tap for sound</div>
-            )}
           </div>
         </div>
 
@@ -158,6 +155,14 @@ class MonthlySplash extends PureComponent {
             <div className="monthly-splash__quote-mark">&ldquo;</div>
             <div className="monthly-splash__quote-text">{this.quote}</div>
           </div>
+        )}
+
+        {/* Rendered at the root (not inside the poster layer) so it stays on
+            screen through BOTH the poster and quote phases -- otherwise it
+            was disappearing after 4s when the poster faded out, well before
+            the splash actually ended. */}
+        {this.state.audioBlocked && (
+          <div className="monthly-splash__sound-hint">🔊 Tap screen for music</div>
         )}
 
         <audio ref={this.audio} src={audioSrc} preload="auto" />

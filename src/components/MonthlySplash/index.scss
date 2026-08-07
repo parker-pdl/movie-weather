@@ -81,15 +81,23 @@ $crossfade-duration: .9s;
   }
 
   &__sound-hint {
-    animation: monthly-splash-pulse 1.6s ease-in-out infinite;
-    background: rgba(0, 0, 0, .45);
-    border: 1px solid rgba(255, 255, 255, .5);
+    animation: monthly-splash-pulse 1.4s ease-in-out infinite;
+    background: rgba(0, 0, 0, .55);
+    border: 1px solid rgba(255, 255, 255, .6);
     border-radius: 999px;
-    font-size: 11px;
+    bottom: 46px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    left: 50%;
     letter-spacing: .04em;
-    margin-top: 16px;
-    padding: 6px 14px;
+    padding: 10px 20px;
+    pointer-events: none;
+    position: absolute;
     text-transform: uppercase;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 5;
   }
 
   &__quote {
