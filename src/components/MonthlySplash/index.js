@@ -46,10 +46,13 @@ class MonthlySplash extends PureComponent {
     this.fadeOutAudio();
   }
 
-  tryPlayAudioOnce() {
+  tryPlayAudioOnce(userInitiated = false) {
     const alreadyPlayedToday = window.localStorage.getItem(AUDIO_PLAYED_KEY) === todayKey();
 
-    if (alreadyPlayedToday || !this.audio.current) {
+    // A direct tap on the splash is a real user gesture and should always be
+    // allowed to (re)try playback, even if the silent auto-attempt already
+    // ran once today -- that's the whole point of the "Tap for sound" hint.
+    if ((alreadyPlayedToday && !userInitiated) || !this.audio.current) {
       return;
     }
 
@@ -59,10 +62,13 @@ class MonthlySplash extends PureComponent {
       playPromise
         .then(() => {
           window.localStorage.setItem(AUDIO_PLAYED_KEY, todayKey());
+          this.setState({ audioBlocked: false });
         })
         .catch(() => {
-          // Autoplay blocked by the browser until the user interacts -- not
-          // an error, just skip silently and try again tomorrow.
+          // Most browsers block audio-with-sound from autoplaying until the
+          // user has interacted with the page at least once. That's not an
+          // error -- show the "Tap for sound" hint so the click handler on
+          // the splash can retry with a real user gesture attached.
           this.setState({ audioBlocked: true });
         });
     }
@@ -92,7 +98,12 @@ class MonthlySplash extends PureComponent {
     const audioSrc = getAudioForMonth(this.month);
 
     return (
-      <div ref={this.root} className="monthly-splash" style={{ backgroundImage: `url(${poster})` }}>
+      <div
+        ref={this.root}
+        className="monthly-splash"
+        style={{ backgroundImage: `url(${poster})` }}
+        onClick={() => this.tryPlayAudioOnce(true)}
+      >
         <div className="monthly-splash__scrim" />
 
         <audio ref={this.audio} src={audioSrc} preload="auto" />
@@ -101,6 +112,9 @@ class MonthlySplash extends PureComponent {
           {genre && <div className="monthly-splash__genre">{genre}</div>}
           {title && <div className="monthly-splash__title">{title}</div>}
           {tagline && <div className="monthly-splash__tagline">{tagline}</div>}
+          {this.state.audioBlocked && (
+            <div className="monthly-splash__sound-hint">Tap for sound</div>
+          )}
         </div>
 
         <Loader ref={this.loader} />
