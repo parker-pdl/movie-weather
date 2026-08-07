@@ -67,14 +67,20 @@
   <title>PWA React Weather App</title>
 
   <!--
-      AD NETWORK SCRIPT TAG GOES HERE (future use).
-      When ready to turn on ads, paste your ad network's site-verification
-      or loader script tag in this spot (e.g. AdSense, PropellerAds,
-      Infolinks -- same kind of snippet already used on the Hostinger
-      sites). This runs once per page load, separate from the in-app ad
-      slot placeholder in src/components/AdSlot, which controls where on
-      the screen an actual ad unit renders.
+      Google AdSense loader (Parker's existing publisher account, same one
+      used on the 3 Hostinger horror sites: pub-2328685696786328).
+      This only loads the AdSense library -- it does NOT show any ad by
+      itself. The actual ad unit is a manual (not auto) placement rendered
+      by src/components/AdSlot, so ads can be turned on/off per-user
+      (e.g. after the "Remove Ads" purchase) instead of appearing
+      everywhere automatically. See src/components/AdSlot/index.js and
+      src/components/RemoveAds/index.js for how the two pieces connect.
+      NOTE: weather.parkerdata.link must be added + approved as a site on
+      this AdSense account before real ads will actually show here --
+      until then this script loads but nothing renders. ads.txt for this
+      domain is already in place (public/ads.txt).
   -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2328685696786328" crossorigin="anonymous"></script>
 </head>
 
 <body>
