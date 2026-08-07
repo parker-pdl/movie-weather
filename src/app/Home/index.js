@@ -10,6 +10,7 @@ import Info from '../../components/Info';
 import DateCurrent from '../../components/DateCurrent';
 import Refresh from '../../components/Refresh';
 import AdSlot from '../../components/AdSlot';
+import RemoveAds, { ADS_REMOVED_KEY } from '../../components/RemoveAds';
 import PropTypes from 'prop-types';
 import { displayTemperature } from '../../helpers/units';
 import monthlyThemes from '../../themes/monthlyThemes';
@@ -27,14 +28,23 @@ class Home extends PureComponent {
       currentForecast: 'hourly',
       forecastIndex: ['hourly', 'daily'],
       locationHintDismissed: window.localStorage.getItem(LOCATION_HINT_DISMISSED_KEY) === 'true',
+      // Free-with-ads by default; flips to true forever on this device once
+      // the $0.99 "Remove Ads" in-app purchase completes (RemoveAds writes
+      // this same localStorage key -- see components/RemoveAds).
+      adsRemoved: window.localStorage.getItem(ADS_REMOVED_KEY) === 'true',
     };
 
     this.onDismissLocationHint = this.onDismissLocationHint.bind(this);
+    this.onAdsRemoved = this.onAdsRemoved.bind(this);
   }
 
   onDismissLocationHint() {
     window.localStorage.setItem(LOCATION_HINT_DISMISSED_KEY, 'true');
     this.setState({ locationHintDismissed: true });
+  }
+
+  onAdsRemoved() {
+    this.setState({ adsRemoved: true });
   }
 
   componentDidMount() {
@@ -107,11 +117,20 @@ class Home extends PureComponent {
         )
       }
       {
-        // Inactive placeholder -- renders nothing until Parker has an ad
-        // network ready and this is flipped to `active`. See
-        // src/components/AdSlot/index.js for how to wire a real ad unit in.
+        // Free-with-ads by default. Renders nothing once the $0.99
+        // "Remove Ads" purchase has happened on this device (adsRemoved),
+        // or until the AdSense ad unit ID is filled in -- see
+        // src/components/AdSlot/index.js.
       }
-      <AdSlot active={false} />
+      <AdSlot active={!this.state.adsRemoved} />
+      {
+        // Only ever renders inside the installed Android app (Play
+        // Billing) -- see src/components/RemoveAds/index.js. No-op on the
+        // plain website.
+      }
+      {
+        !this.state.adsRemoved && <RemoveAds onPurchased={this.onAdsRemoved} />
+      }
     </Fragment>
   }
 }
