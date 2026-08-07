@@ -12,7 +12,7 @@ export const POSTER_DURATION_MS = 4000;
 export const CROSSFADE_MS = 900;
 // How long the quote stays fully visible on black before src/app/index.js
 // is expected to call animateOut().
-export const QUOTE_HOLD_MS = 3000;
+export const QUOTE_HOLD_MS = 5000;
 // Total recommended minimum splash time -- src/app/index.js waits at least
 // this long (in addition to the weather fetch) before dismissing the splash,
 // so the poster and the quote both get real screen time.
