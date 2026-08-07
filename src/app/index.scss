@@ -127,12 +127,18 @@ a {
   // anywhere in the app (see onAppClick in index.js) retries playback with a
   // real user gesture attached, same trick as the splash used before the
   // audio element lived here.
+  //
+  // bottom: 130px keeps it clear of everything else stacked at the bottom
+  // of Home (RemoveAds pill at bottom: 62px, the location-hint box below
+  // that which can grow to ~3 lines, and the ad slot beneath those) --
+  // this used to sit at bottom: 46px and overlapped the location-hint text
+  // once that was added.
   &__sound-hint {
     animation: app-sound-hint-pulse 1.4s ease-in-out infinite;
     background: rgba(0, 0, 0, .55);
     border: 1px solid rgba(255, 255, 255, .6);
     border-radius: 999px;
-    bottom: 46px;
+    bottom: 130px;
     color: #fff;
     font-size: 14px;
     font-weight: 600;
