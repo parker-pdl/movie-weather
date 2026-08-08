@@ -1,6 +1,7 @@
 {
   "short_name": "Parker Weather",
   "name": "Parker Data Link Weather",
+  "description": "A movie-themed weather app that shows current conditions and forecasts styled after this month's featured film.",
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#2a329e",
@@ -45,11 +46,6 @@
       "src": "/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
-    },
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
     }
   ]
 }
