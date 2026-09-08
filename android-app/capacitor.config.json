@@ -1,0 +1,13 @@
+{
+  "appId": "link.parkerdata.weather.twa",
+  "appName": "Parker Weather",
+  "webDir": "www",
+  "server": {
+    "url": "https://movie-weather.pages.dev/?app=1",
+    "cleartext": false
+  },
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#2a329e"
+  }
+}

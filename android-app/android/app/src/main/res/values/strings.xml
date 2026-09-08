@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Parker Weather</string>
+    <string name="title_activity_main">Parker Weather</string>
+    <string name="package_name">link.parkerdata.weather.twa</string>
+    <string name="custom_url_scheme">link.parkerdata.weather.twa</string>
+</resources>
